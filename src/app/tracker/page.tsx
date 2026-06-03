@@ -123,7 +123,7 @@ export default async function TrackerPage() {
   .from("predictions")
   .select("*")
   .order("source_draw_date", { ascending: false });
-  console.log("PREDICTIONS:", predictions);
+  console.log("TRACKER PREDICTIONS:", predictions);
 
   const results = [];
   let hitCount = 0;
