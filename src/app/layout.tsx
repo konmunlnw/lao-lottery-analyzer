@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "หวยลาวพัฒนา Analyzer",
-  description: "Lottery Analysis Dashboard",
+  description: "ระบบวิเคราะห์หวยลาวพัฒนา ด้วยข้อมูลย้อนหลังและการทดสอบโมเดลแบบอัตโนมัติ",
 };
 
 export default function RootLayout({

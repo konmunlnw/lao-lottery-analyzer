@@ -1,3 +1,7 @@
+import {
+  testPositionAnalyzer,
+  testPositionEliteAnalyzer,
+} from "@/lib/backtest";
 import { supabase } from "@/lib/supabase";
 import {
   analyzeNumbers,
@@ -34,6 +38,10 @@ export default async function Home() {
   console.log(positionAnalysis);
   const scores = calculateScores(data || []);
 const top10 = scores.slice(0, 10);
+const backtestData = [...(data || [])].reverse();
+
+const statsV5 = testPositionAnalyzer(backtestData);
+const statsElite = testPositionEliteAnalyzer(backtestData);
   const latest = data?.[0];
   const recentDraws = data?.slice(0, 50) || [];
   const totalDraws = data?.length || 0;
@@ -50,7 +58,7 @@ console.log(analysis);
     <p className="text-gray-500 mb-2">🏆 โมเดลดีที่สุด</p>
     <h2 className="text-2xl font-bold">Analyzer V5 Pro</h2>
     <p className="text-green-600 font-bold mt-2">
-      Accuracy 16.25%
+      Accuracy {statsV5.accuracy}%
     </p>
   </div>
 
@@ -58,7 +66,7 @@ console.log(analysis);
     <p className="text-gray-500 mb-2">🎯 โมเดลใช้งานจริง</p>
     <h2 className="text-2xl font-bold">V5 Elite</h2>
     <p className="text-green-600 font-bold mt-2">
-      Accuracy 10.44%
+      Accuracy {statsElite.accuracy}%
     </p>
   </div>
 
@@ -75,7 +83,7 @@ console.log(analysis);
   </h2>
 
   <p className="text-gray-600 mb-4">
-    Analyzer V5 Elite • Backtest Accuracy 10.44%
+    Analyzer V5 Elite • Backtest Accuracy {statsElite.accuracy}%
   </p>
 
   <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>

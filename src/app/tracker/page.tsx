@@ -1,13 +1,16 @@
 import { supabase } from "@/lib/supabase";
 import {
   analyzeNumbers,
-  analyze2DPositions,
   analyze4DPositions,
-  analyze2DTrend,
-  analyzeHybridV7,
 } from "@/lib/analyzer";
-import { calculateScores } from "@/lib/scoring";
 
+import {
+  testPositionAnalyzer,
+  testPositionEliteAnalyzer,
+  testTrendAnalyzer,
+  testHybridV7Analyzer,
+} from "@/lib/backtest";
+import { calculateScores } from "@/lib/scoring";
 function testAccuracy(data: any[], windowSize: number) {
   let hitCount = 0;
   let total = 0;
@@ -79,45 +82,6 @@ function testScoringEngine(draws: any[]) {
   };
 }
 
-function testPositionAnalyzer(draws: any[]) {
-  let hits = 0;
-  let total = 0;
-
-  for (let i = 50; i < draws.length - 1; i++) {
-    const history = draws.slice(i);
-    const analysis = analyze2DPositions(history);
-    const nextDraw = draws[i - 1];
-
-    if (analysis.suggestions.includes(nextDraw.number_2)) hits++;
-    total++;
-  }
-
-  return {
-    hits,
-    total,
-    accuracy: total > 0 ? ((hits / total) * 100).toFixed(2) : "0",
-  };
-}
-
-function testPositionEliteAnalyzer(draws: any[]) {
-  let hits = 0;
-  let total = 0;
-
-  for (let i = 50; i < draws.length - 1; i++) {
-    const history = draws.slice(i);
-    const analysis = analyze2DPositions(history);
-    const nextDraw = draws[i - 1];
-
-    if ((analysis.eliteSuggestions || analysis.suggestions || []).includes(nextDraw.number_2)) hits++;
-    total++;
-  }
-
-  return {
-    hits,
-    total,
-    accuracy: total > 0 ? ((hits / total) * 100).toFixed(2) : "0",
-  };
-}
 function test4DAnalyzer(draws: any[]) {
   let hits = 0;
   let total = 0;
@@ -144,54 +108,7 @@ function test4DAnalyzer(draws: any[]) {
     accuracy: total > 0 ? ((hits / total) * 100).toFixed(2) : "0",
   };
 }
-function testTrendAnalyzer(draws: any[]) {
-  let hits = 0;
-  let total = 0;
 
-  for (let i = 100; i < draws.length - 1; i++) {
-    const history = draws.slice(i);
-    const analysis = analyze2DTrend(history);
-
-    const top10 = analysis.slice(0, 10).map((row) => row.number);
-    const nextDraw = draws[i - 1];
-
-    if (top10.includes(nextDraw.number_2)) {
-      hits++;
-    }
-
-    total++;
-  }
-
-  return {
-    hits,
-    total,
-    accuracy: total > 0 ? ((hits / total) * 100).toFixed(2) : "0",
-  };
-}
-function testHybridV7Analyzer(draws: any[]) {
-  let hits = 0;
-  let total = 0;
-
-  for (let i = 100; i < draws.length - 1; i++) {
-    const history = draws.slice(i);
-    const analysis = analyzeHybridV7(history);
-
-    const top10 = analysis.slice(0, 10).map((row) => row.number);
-    const nextDraw = draws[i - 1];
-
-    if (top10.includes(nextDraw.number_2)) {
-      hits++;
-    }
-
-    total++;
-  }
-
-  return {
-    hits,
-    total,
-    accuracy: total > 0 ? ((hits / total) * 100).toFixed(2) : "0",
-  };
-}
 export default async function TrackerPage() {
   const { data, error } = await supabase
     .from("draws")
