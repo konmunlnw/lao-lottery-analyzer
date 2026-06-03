@@ -118,6 +118,12 @@ export default async function TrackerPage() {
   if (error) {
     return <div className="p-8">Error: {error.message}</div>;
   }
+  
+  const { data: predictions } = await supabase
+  .from("predictions")
+  .select("*")
+  .order("source_draw_date", { ascending: false });
+  console.log("PREDICTIONS:", predictions);
 
   const results = [];
   let hitCount = 0;
@@ -155,7 +161,46 @@ const statsHybridV7 = testHybridV7Analyzer(data);
     <main className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold mb-6">🎯 Tracker</h1>
+        <div className="bg-white rounded-xl shadow p-6 mb-8">
+  <h2 className="text-2xl font-bold mb-4">
+    📡 Live Prediction Tracker
+  </h2>
 
+  <table className="w-full">
+    <thead>
+      <tr className="border-b">
+        <th className="text-left p-2">งวดอ้างอิง</th>
+        <th className="text-left p-2">โมเดล</th>
+        <th className="text-left p-2">เลขที่ล็อกไว้</th>
+        <th className="text-left p-2">ผลจริง</th>
+        <th className="text-left p-2">สถานะ</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {(predictions || []).map((row) => (
+        <tr key={row.id} className="border-b">
+          <td className="p-2">{row.source_draw_date}</td>
+          <td className="p-2 font-bold">{row.model}</td>
+          <td className="p-2">
+            {Array.isArray(row.predictions)
+              ? row.predictions.join(", ")
+              : ""}
+          </td>
+          <td className="p-2">{row.actual_result || "-"}</td>
+          <td className="p-2">
+            {row.is_hit === true
+              ? "✅ เข้า"
+              : row.is_hit === false
+              ? "❌ ไม่เข้า"
+              : "⏳ รอผล"}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+        
         <div className="bg-white rounded-xl shadow p-6 mb-8">
           <h2 className="text-2xl font-bold mb-4">
             📈 Accuracy Comparison

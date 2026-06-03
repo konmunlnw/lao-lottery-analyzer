@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const { draw_date, number_6, number_3, number_2, admin_key } = body;
-    
+
 console.log("ENV:", process.env.ADMIN_SECRET_KEY);
 console.log("INPUT:", admin_key);
 if (admin_key !== process.env.ADMIN_SECRET_KEY) {
@@ -66,14 +66,36 @@ const { data: allDraws } = await supabase
 if (allDraws) {
   const analysis = analyze2DPositions(allDraws);
 
-  await supabase
-    .from("predictions")
-    .upsert({
-      source_draw_date: draw_date,
-      model: "V5 Elite",
-      predictions: analysis.eliteSuggestions,
-    });
+  console.log("ALL DRAWS:", allDraws.length);
+  console.log("ANALYSIS:", analysis);
+  console.log("ELITE:", analysis.eliteSuggestions);
+
+  const { data: predictionData, error: predictionError } =
+    await supabase
+      .from("predictions")
+      .upsert(
+        {
+          source_draw_date: draw_date,
+          model: "V5 Elite",
+          predictions: analysis.eliteSuggestions || [],
+        },
+        {
+          onConflict: "source_draw_date,model",
+        }
+      )
+      .select();
+
+  console.log("PREDICTION DATA:", predictionData);
+  console.log("PREDICTION ERROR:", predictionError);
+
+  if (predictionError) {
+    return NextResponse.json(
+      { error: predictionError.message },
+      { status: 500 }
+    );
+  }
 }
+
 
     return NextResponse.json({
       success: true,
