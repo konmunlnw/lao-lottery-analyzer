@@ -11,7 +11,9 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const { draw_date, number_6, number_3, number_2, admin_key } = body;
-
+    
+console.log("ENV:", process.env.ADMIN_SECRET_KEY);
+console.log("INPUT:", admin_key);
 if (admin_key !== process.env.ADMIN_SECRET_KEY) {
   return NextResponse.json(
     { error: "รหัสไม่ถูกต้อง" },
@@ -54,6 +56,24 @@ if (existingDraw) {
         { status: 500 }
       );
     }
+    const { analyze2DPositions } = await import("@/lib/analyzer");
+
+const { data: allDraws } = await supabase
+  .from("draws")
+  .select("*")
+  .order("draw_date", { ascending: false });
+
+if (allDraws) {
+  const analysis = analyze2DPositions(allDraws);
+
+  await supabase
+    .from("predictions")
+    .upsert({
+      source_draw_date: draw_date,
+      model: "V5 Elite",
+      predictions: analysis.eliteSuggestions,
+    });
+}
 
     return NextResponse.json({
       success: true,

@@ -37,6 +37,8 @@ export default async function Home() {
   analyzeHybridV7(data || []);
   const eliteNumbers =
   positionAnalysis.eliteSuggestions || [];
+  const mainEliteNumbers = eliteNumbers.slice(0, 5);
+const backupEliteNumbers = eliteNumbers.slice(5, 10);
   console.log(positionAnalysis);
   const scores = calculateScores(data || []);
 const top10 = scores.slice(0, 10);
@@ -127,32 +129,63 @@ console.log(analysis);
     🎯 เลขแนะนำหลักงวดหน้า
   </h2>
 
-  <p className="text-gray-600 mb-4">
-    Analyzer V5 Elite • Backtest Accuracy {statsElite.accuracy}%
-  </p>
+  <p className="font-bold mb-2">
+  🎯 Top 5 เน้น
+</p>
 
-  <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
-    {eliteNumbers.map((num) => (
-      <span
-        key={num}
-        style={{
-          background: "black",
-          color: "white",
-          padding: "10px 18px",
-          borderRadius: "10px",
-          fontWeight: "bold",
-          display: "inline-block",
-          fontSize: "20px",
-        }}
-      >
-        {num}
-      </span>
-    ))}
-  </div>
+<div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+  {mainEliteNumbers.map((num) => (
+    <span
+      key={num}
+      style={{
+        background: "black",
+        color: "white",
+        padding: "10px 18px",
+        borderRadius: "10px",
+        fontWeight: "bold",
+        display: "inline-block",
+        fontSize: "20px",
+      }}
+    >
+      {num}
+    </span>
+  ))}
+</div>
+
+<p className="font-bold mt-5 mb-2">
+  📌 สำรอง 5 ตัว
+</p>
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+  {backupEliteNumbers.map((num) => (
+    <span
+      key={num}
+      style={{
+        background: "#4b5563",
+        color: "white",
+        padding: "8px 16px",
+        borderRadius: "10px",
+        fontWeight: "bold",
+        display: "inline-block",
+      }}
+    >
+      {num}
+    </span>
+  ))}
+</div>
 </div>
       {/* งวดล่าสุด */}
       {latest && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+  <div className="bg-white rounded-xl shadow p-6 mb-8">
+    <h2 className="text-2xl font-bold mb-2">
+      📌 ผลงวดล่าสุด
+    </h2>
+
+    <p className="text-gray-600 mb-4">
+      วันที่ {latest.draw_date}
+    </p>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white rounded-xl shadow p-6 text-center">
             <h3 className="text-gray-500 mb-2">เลข 6 ตัว</h3>
             <p className="text-3xl font-bold">
@@ -173,9 +206,9 @@ console.log(analysis);
               {latest.number_2}
             </p>
           </div>
-        </div>
-      )}
-
+            </div>
+  </div>
+)}
       {/* เลขเด่น */}
       <div className="bg-white rounded-xl shadow p-6 mb-8">
         <h2 className="text-2xl font-bold mb-4">
