@@ -7,104 +7,97 @@ export default function AdminPage() {
   const [number6, setNumber6] = useState("");
   const [number3, setNumber3] = useState("");
   const [number2, setNumber2] = useState("");
+  const [adminKey, setAdminKey] = useState("");
   const [message, setMessage] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     setMessage("กำลังบันทึก...");
-
+const autoNumber3 = number6.slice(-3);
+const autoNumber2 = number6.slice(-2);
+if (number6.length !== 6) {
+  setMessage("❌ เลข 6 ตัวต้องมี 6 หลัก");
+  return;
+}
     const res = await fetch("/api/add-draw", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        draw_date: drawDate,
-        number_6: number6,
-        number_3: number3,
-        number_2: number2,
-      }),
+  draw_date: drawDate,
+  number_6: number6,
+  number_3: autoNumber3,
+  number_2: autoNumber2,
+  admin_key: adminKey,
+}),
     });
 
-    const text = await res.text();
-console.log(text);
-
-let data;
-
-try {
-  data = JSON.parse(text);
-} catch {
-  setMessage("API ส่งข้อมูลกลับไม่ถูกต้อง");
-  return;
-}
+    const data = await res.json();
 
     if (data.success) {
       setMessage("✅ บันทึกสำเร็จ");
-
       setDrawDate("");
       setNumber6("");
       setNumber3("");
       setNumber2("");
+      setAdminKey("");
     } else {
       setMessage(`❌ ${data.error}`);
     }
   }
 
   return (
-    <main style={{ padding: "20px", maxWidth: "500px" }}>
-      <h1>เพิ่มผลหวยลาวพัฒนา</h1>
+    <main className="min-h-screen bg-gray-100 p-6">
+      <div style={{ maxWidth: "520px", margin: "0 auto" }} className="bg-white rounded-xl shadow p-6">
+        <h1 className="text-3xl font-bold mb-6">
+          เพิ่มผลหวยลาวพัฒนา
+        </h1>
 
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <label>วันที่ (YYYY-MM-DD)</label>
-          <br />
-          <input
-            value={drawDate}
-            onChange={(e) => setDrawDate(e.target.value)}
-            required
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block font-medium mb-1">วันที่ (YYYY-MM-DD)</label>
+            <input
+              className="w-full border-2 border-gray-400 bg-white rounded-lg p-3 text-black"
+              value={drawDate}
+              onChange={(e) => setDrawDate(e.target.value)}
+              required
+            />
+          </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>เลข 6 ตัว</label>
-          <br />
-          <input
-            value={number6}
-            onChange={(e) => setNumber6(e.target.value)}
-            maxLength={6}
-            required
-          />
-        </div>
+          <div>
+            <label className="block font-medium mb-1">เลข 6 ตัว</label>
+            <input
+              className="w-full border-2 border-gray-400 bg-white rounded-lg p-3 text-black"
+              value={number6}
+              onChange={(e) => setNumber6(e.target.value)}
+              maxLength={6}
+              required
+            />
+          </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>เลข 3 ตัว</label>
-          <br />
-          <input
-            value={number3}
-            onChange={(e) => setNumber3(e.target.value)}
-            maxLength={3}
-            required
-          />
-        </div>
+          <div>
+            <label className="block font-medium mb-1">รหัส Admin</label>
+            <input
+              type="password"
+              className="w-full border-2 border-gray-400 bg-white rounded-lg p-3 text-black"
+              value={adminKey}
+              onChange={(e) => setAdminKey(e.target.value)}
+              required
+            />
+          </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>เลข 2 ตัว</label>
-          <br />
-          <input
-            value={number2}
-            onChange={(e) => setNumber2(e.target.value)}
-            maxLength={2}
-            required
-          />
-        </div>
+          <button
+            type="submit"
+            className="w-full bg-black text-white rounded-lg p-3 font-bold"
+          >
+            บันทึกผลหวย
+          </button>
+        </form>
 
-        <button type="submit">
-          บันทึกผลหวย
-        </button>
-      </form>
-
-      <p>{message}</p>
+        {message && <p className="mt-4 font-medium">{message}</p>}
+      </div>
     </main>
   );
 }

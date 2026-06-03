@@ -1,6 +1,8 @@
 import {
   testPositionAnalyzer,
   testPositionEliteAnalyzer,
+  testTrendAnalyzer,
+  testHybridV7Analyzer,
 } from "@/lib/backtest";
 import { supabase } from "@/lib/supabase";
 import {
@@ -42,6 +44,26 @@ const backtestData = [...(data || [])].reverse();
 
 const statsV5 = testPositionAnalyzer(backtestData);
 const statsElite = testPositionEliteAnalyzer(backtestData);
+const statsTrend = testTrendAnalyzer(backtestData);
+const statsHybrid = testHybridV7Analyzer(backtestData);
+const modelRanking = [
+  {
+    name: "Analyzer V5 Pro",
+    accuracy: Number(statsV5.accuracy),
+  },
+  {
+    name: "V5 Elite",
+    accuracy: Number(statsElite.accuracy),
+  },
+  {
+    name: "V6 Trend",
+    accuracy: Number(statsTrend.accuracy),
+  },
+  {
+    name: "V7 Hybrid",
+    accuracy: Number(statsHybrid.accuracy),
+  },
+].sort((a, b) => b.accuracy - a.accuracy);
   const latest = data?.[0];
   const recentDraws = data?.slice(0, 50) || [];
   const totalDraws = data?.length || 0;
@@ -77,6 +99,29 @@ console.log(analysis);
     </h2>
   </div>
 </div>
+
+<div className="bg-white rounded-xl shadow p-6 mb-8">
+  <h2 className="text-2xl font-bold mb-4">
+    🏆 อันดับโมเดลล่าสุด
+  </h2>
+
+  <table className="w-full">
+    <tbody>
+      {modelRanking.map((model, index) => (
+        <tr key={model.name} className="border-b">
+          <td className="p-3 text-2xl">
+            {index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "4️⃣"}
+          </td>
+          <td className="p-3 font-bold">{model.name}</td>
+          <td className="p-3 font-bold text-green-600">
+            {model.accuracy.toFixed(2)}%
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
 <div className="bg-white rounded-xl shadow p-6 mb-8">
   <h2 className="text-2xl font-bold mb-2">
     🎯 เลขแนะนำหลักงวดหน้า

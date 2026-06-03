@@ -10,8 +10,27 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const { draw_date, number_6, number_3, number_2 } = body;
+    const { draw_date, number_6, number_3, number_2, admin_key } = body;
 
+if (admin_key !== process.env.ADMIN_SECRET_KEY) {
+  return NextResponse.json(
+    { error: "รหัสไม่ถูกต้อง" },
+    { status: 401 }
+  );
+}
+
+const { data: existingDraw } = await supabase
+  .from("draws")
+  .select("id")
+  .eq("draw_date", draw_date)
+  .maybeSingle();
+
+if (existingDraw) {
+  return NextResponse.json(
+    { error: "งวดวันที่นี้มีอยู่แล้วในระบบ" },
+    { status: 409 }
+  );
+}
     const { data, error } = await supabase
       .from("draws")
       .upsert(
