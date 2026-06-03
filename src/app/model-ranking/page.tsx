@@ -1,63 +1,48 @@
-const models = [
-  {
-    rank: "🥇",
-    name: "Analyzer V5 Pro",
-    accuracy: "16.25%",
-    hit: "137/843",
-    note: "ใช้ Top 4 หลักสิบ × Top 4 หลักหน่วย รวม 16 ชุด",
-  },
-  {
-    rank: "🥈",
-    name: "Analyzer V5 Elite",
-    accuracy: "10.44%",
-    hit: "88/843",
-    note: "คัด Top 10 จาก V5 Pro เหมาะสำหรับใช้งานจริง",
-  },
-  {
-    rank: "🥉",
-    name: "Hot Digits",
-    accuracy: "6.04%",
-    hit: "51/844",
-    note: "วิเคราะห์จากเลขเดี่ยวที่ออกบ่อยที่สุด",
-  },
-  {
-    rank: "4",
-    name: "Scoring Engine",
-    accuracy: "5.22%",
-    hit: "44/843",
-    note: "ใช้ Frequency + Missing แบบถ่วงน้ำหนัก",
-  },
-  {
-    rank: "5",
-    name: "50 งวดล่าสุด",
-    accuracy: "5.09%",
-    hit: "43/844",
-    note: "ใช้ข้อมูลย้อนหลัง 50 งวด",
-  },
-  {
-    rank: "6",
-    name: "20 งวดล่าสุด",
-    accuracy: "4.92%",
-    hit: "43/874",
-    note: "ใช้ข้อมูลย้อนหลัง 20 งวด",
-  },
-  {
-    rank: "7",
-    name: "Top เลข 2 ตัว",
-    accuracy: "4.62%",
-    hit: "39/844",
-    note: "ใช้เลข 2 ตัวที่ออกบ่อยที่สุด",
-  },
-  {
-    rank: "8",
-    name: "100 งวดล่าสุด",
-    accuracy: "3.02%",
-    hit: "24/794",
-    note: "ใช้ข้อมูลย้อนหลัง 100 งวด",
-  },
-];
+import { supabase } from "@/lib/supabase";
+import {
+  testPositionAnalyzer,
+  testPositionEliteAnalyzer,
+  testTrendAnalyzer,
+  testHybridV7Analyzer,
+} from "@/lib/backtest";
 
-export default function ModelRankingPage() {
+export default async function ModelRankingPage() {
+  const { data, error } = await supabase
+    .from("draws")
+    .select("*")
+    .order("draw_date", { ascending: true });
+
+  if (error) {
+    return <div className="p-8">Error: {error.message}</div>;
+  }
+
+  const models = [
+    {
+      name: "Analyzer V5 Pro",
+      accuracy: Number(testPositionAnalyzer(data).accuracy),
+      hit: `${testPositionAnalyzer(data).hits}/${testPositionAnalyzer(data).total}`,
+      note: "Top 4 หลักสิบ × Top 4 หลักหน่วย",
+    },
+    {
+      name: "Analyzer V5 Elite",
+      accuracy: Number(testPositionEliteAnalyzer(data).accuracy),
+      hit: `${testPositionEliteAnalyzer(data).hits}/${testPositionEliteAnalyzer(data).total}`,
+      note: "คัด Top 10 จาก V5 Pro",
+    },
+    {
+      name: "Analyzer V6 Trend",
+      accuracy: Number(testTrendAnalyzer(data).accuracy),
+      hit: `${testTrendAnalyzer(data).hits}/${testTrendAnalyzer(data).total}`,
+      note: "วิเคราะห์แนวโน้ม 20/50/100 งวดล่าสุด",
+    },
+    {
+      name: "Analyzer V7 Hybrid",
+      accuracy: Number(testHybridV7Analyzer(data).accuracy),
+      hit: `${testHybridV7Analyzer(data).hits}/${testHybridV7Analyzer(data).total}`,
+      note: "รวมคะแนนจาก V5 + V6",
+    },
+  ].sort((a, b) => b.accuracy - a.accuracy);
+
   return (
     <main className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-5xl mx-auto">
@@ -78,11 +63,13 @@ export default function ModelRankingPage() {
             </thead>
 
             <tbody>
-              {models.map((model) => (
+              {models.map((model, index) => (
                 <tr key={model.name} className="border-b">
-                  <td className="p-2 text-2xl">{model.rank}</td>
+                  <td className="p-2 text-2xl">
+                    {index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : index + 1}
+                  </td>
                   <td className="p-2 font-bold">{model.name}</td>
-                  <td className="p-2 font-bold">{model.accuracy}</td>
+                  <td className="p-2 font-bold">{model.accuracy.toFixed(2)}%</td>
                   <td className="p-2">{model.hit}</td>
                   <td className="p-2 text-gray-600">{model.note}</td>
                 </tr>
