@@ -94,6 +94,12 @@ if (number6.length !== 6) {
           >
             บันทึกผลหวย
           </button>
+          <a
+  href="/admin/export"
+  className="block w-full text-center bg-blue-600 text-white rounded-lg p-3 font-bold mt-3"
+>
+  📥 Export Backup
+</a>
         </form>
 
         {message && <p className="mt-4 font-medium">{message}</p>}
