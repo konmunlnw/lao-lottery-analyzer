@@ -13,6 +13,8 @@ import {
   analyzeHybridV7
 } from "@/lib/analyzer";
 import { calculateScores } from "@/lib/scoring";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function Home() {
   const { data, error } = await supabase
@@ -421,7 +423,7 @@ const modelRanking = [
 
           <div className="grid gap-4 lg:grid-cols-2">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
-              <h3 className="text-lg font-black text-slate-950">Analyzer V5</h3>
+              <h3 className="text-lg font-black text-slate-950">Analyzer V5 PRO</h3>
 
               <div className="mt-4 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
                 <p className="rounded-2xl bg-white p-3">
