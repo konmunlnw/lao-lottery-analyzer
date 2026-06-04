@@ -3,6 +3,8 @@ import {
   analyzeNumbers,
   analyze4DPositions,
 } from "@/lib/analyzer";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 import {
   testPositionAnalyzer,
@@ -11,6 +13,7 @@ import {
   testHybridV7Analyzer,
 } from "@/lib/backtest";
 import { calculateScores } from "@/lib/scoring";
+
 function testAccuracy(data: any[], windowSize: number) {
   let hitCount = 0;
   let total = 0;
