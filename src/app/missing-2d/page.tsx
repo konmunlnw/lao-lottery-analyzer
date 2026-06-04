@@ -1,4 +1,6 @@
 import { supabase } from "@/lib/supabase";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function Missing2DPage() {
   const { data, error } = await supabase
