@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
+
 const navItems = [
   { href: "/", label: "Dashboard" },
   { href: "/statistics", label: "Statistics" },
@@ -35,9 +36,13 @@ export default function AppNavigation() {
             className="group flex min-w-0 items-center gap-3 rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-slate-200"
             onClick={() => setIsOpen(false)}
           >
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-lg font-black text-white shadow-sm">
-              LA
-            </div>
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+  <img
+    src="/logo.png"
+    alt="Lao Lottery Analyzer"
+    className="h-full w-full scale-[1.8] object-contain"
+  />
+</div>
 
             <div className="min-w-0">
               <p className="truncate text-sm font-black leading-tight text-slate-950 sm:text-base">
