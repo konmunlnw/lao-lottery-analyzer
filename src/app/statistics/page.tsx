@@ -39,9 +39,14 @@ export default async function StatisticsPage() {
 
   if (error) {
     return (
-      <div className="p-8">
-        Error: {error.message}
-      </div>
+      <main className="min-h-screen bg-slate-50 px-4 py-6 text-slate-950 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-xl rounded-2xl border border-red-200 bg-red-50 p-5 shadow-sm">
+          <p className="text-sm font-bold text-red-700">เกิดข้อผิดพลาด</p>
+          <p className="mt-2 break-words text-sm leading-6 text-red-600">
+            {error.message}
+          </p>
+        </div>
+      </main>
     );
   }
 
@@ -65,174 +70,355 @@ const topNumber2 = Object.entries(number2Count)
   .slice(0, 20);
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-5xl mx-auto">
+    <main className="min-h-screen bg-slate-50 text-slate-950">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
+        <header className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+            Analytics Dashboard
+          </p>
+          <h1 className="mt-2 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-5xl">
+            Statistics
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+            ภาพรวมสถิติเลขร้อน เลขเย็น อันดับตัวเลข และ Top เลข 2 ตัวจากข้อมูลย้อนหลังทั้งหมด
+          </p>
+        </header>
 
-        <h1 className="text-4xl font-bold mb-8">
-          📊 Statistics
-        </h1>
-
-        {/* HOT/COLD */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-
-          {/* 20 */}
-          <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-2xl font-bold mb-4">
-              20 งวดล่าสุด
-            </h2>
-
-            <p className="font-bold mb-2">
-              🔥 Hot Numbers
+        <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+            <p className="text-xs font-bold text-slate-500">จำนวนข้อมูลงวด</p>
+            <p className="mt-2 text-2xl font-black text-slate-950 sm:text-3xl">
+              {data.length}
             </p>
-
-            <div className="flex gap-3 mb-4">
-              {stats20.hot.map((n) => (
-                <div
-                  key={n}
-                  className="w-14 h-14 rounded-full bg-black text-white flex items-center justify-center font-bold text-xl"
-                >
-                  {n}
-                </div>
-              ))}
-            </div>
-
-            <p className="font-bold mb-2">
-              ❄️ Cold Numbers
-            </p>
-
-            <div className="flex gap-3">
-              {stats20.cold.map((n) => (
-                <div
-                  key={n}
-                  className="w-14 h-14 rounded-full border-2 flex items-center justify-center font-bold text-xl"
-                >
-                  {n}
-                </div>
-              ))}
-            </div>
+            <p className="mt-1 text-xs text-slate-500">งวดทั้งหมด</p>
           </div>
 
-          {/* 50 */}
-          <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-2xl font-bold mb-4">
-              50 งวดล่าสุด
-            </h2>
-
-            <p className="font-bold mb-2">
-              🔥 Hot Numbers
+          <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 shadow-sm sm:p-5">
+            <p className="text-xs font-bold text-rose-700">Hot Digit อันดับ 1</p>
+            <p className="mt-2 text-3xl font-black text-rose-800 sm:text-4xl">
+              {statsAll.hot[0]}
             </p>
-
-            <div className="flex gap-3 mb-4">
-              {stats50.hot.map((n) => (
-                <div
-                  key={n}
-                  className="w-14 h-14 rounded-full bg-black text-white flex items-center justify-center font-bold text-xl"
-                >
-                  {n}
-                </div>
-              ))}
-            </div>
-
-            <p className="font-bold mb-2">
-              ❄️ Cold Numbers
-            </p>
-
-            <div className="flex gap-3">
-              {stats50.cold.map((n) => (
-                <div
-                  key={n}
-                  className="w-14 h-14 rounded-full border-2 flex items-center justify-center font-bold text-xl"
-                >
-                  {n}
-                </div>
-              ))}
-            </div>
+            <p className="mt-1 text-xs text-rose-700">จากสถิติทั้งหมด</p>
           </div>
 
-        </div>
+          <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 shadow-sm sm:p-5">
+            <p className="text-xs font-bold text-sky-700">Cold Digit อันดับ 1</p>
+            <p className="mt-2 text-3xl font-black text-sky-800 sm:text-4xl">
+              {statsAll.cold[0]}
+            </p>
+            <p className="mt-1 text-xs text-sky-700">ออกน้อยที่สุด</p>
+          </div>
 
-        {/* Ranking */}
-        <div className="bg-white rounded-xl shadow p-6">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm sm:p-5">
+            <p className="text-xs font-bold text-emerald-700">Top เลข 2 ตัว</p>
+            <p className="mt-2 text-3xl font-black text-emerald-800 sm:text-4xl">
+              {topNumber2[0]?.[0] || "-"}
+            </p>
+            <p className="mt-1 text-xs text-emerald-700">
+              {topNumber2[0]?.[1] || 0} ครั้ง
+            </p>
+          </div>
+        </section>
 
-          <h2 className="text-2xl font-bold mb-6">
-            อันดับเลขทั้งหมด
-          </h2>
+        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <div className="mb-5">
+            <h2 className="text-xl font-black text-slate-950 sm:text-2xl">
+              Hot / Cold Numbers
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-slate-500">
+              เปรียบเทียบเลขที่ออกบ่อยและออกน้อยในช่วง 20, 50, 100 งวด และข้อมูลทั้งหมด
+            </p>
+          </div>
 
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-2">เลข</th>
-                <th className="text-left p-2">จำนวนครั้ง</th>
-              </tr>
-            </thead>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-black text-slate-950">20 งวดล่าสุด</h3>
+                  <p className="mt-1 text-sm text-slate-500">ช่วงสั้นล่าสุด</p>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-600 shadow-sm">
+                  20 draws
+                </span>
+              </div>
 
-            <tbody>
-              {statsAll.ranking.map(([digit, count]) => (
-                <tr
-                  key={digit}
-                  className="border-b"
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <p className="mb-3 text-sm font-bold text-rose-700">Hot Numbers</p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {stats20.hot.map((n) => (
+                      <div
+                        key={n}
+                        className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-xl font-black text-white shadow-sm"
+                      >
+                        {n}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-3 text-sm font-bold text-sky-700">Cold Numbers</p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {stats20.cold.map((n) => (
+                      <div
+                        key={n}
+                        className="flex h-14 w-14 items-center justify-center rounded-full border border-slate-300 bg-white text-xl font-black text-slate-800"
+                      >
+                        {n}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-black text-slate-950">50 งวดล่าสุด</h3>
+                  <p className="mt-1 text-sm text-slate-500">ช่วงกลางสำหรับดูแนวโน้ม</p>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-600 shadow-sm">
+                  50 draws
+                </span>
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <p className="mb-3 text-sm font-bold text-rose-700">Hot Numbers</p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {stats50.hot.map((n) => (
+                      <div
+                        key={n}
+                        className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-xl font-black text-white shadow-sm"
+                      >
+                        {n}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-3 text-sm font-bold text-sky-700">Cold Numbers</p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {stats50.cold.map((n) => (
+                      <div
+                        key={n}
+                        className="flex h-14 w-14 items-center justify-center rounded-full border border-slate-300 bg-white text-xl font-black text-slate-800"
+                      >
+                        {n}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-black text-slate-950">100 งวดล่าสุด</h3>
+                  <p className="mt-1 text-sm text-slate-500">ช่วงยาวสำหรับภาพรวม</p>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-600 shadow-sm">
+                  100 draws
+                </span>
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <p className="mb-3 text-sm font-bold text-rose-700">Hot Numbers</p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {stats100.hot.map((n) => (
+                      <div
+                        key={n}
+                        className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-xl font-black text-white shadow-sm"
+                      >
+                        {n}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-3 text-sm font-bold text-sky-700">Cold Numbers</p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {stats100.cold.map((n) => (
+                      <div
+                        key={n}
+                        className="flex h-14 w-14 items-center justify-center rounded-full border border-slate-300 bg-white text-xl font-black text-slate-800"
+                      >
+                        {n}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-black text-slate-950">ทั้งหมด</h3>
+                  <p className="mt-1 text-sm text-slate-500">สถิติจากข้อมูลทุกงวด</p>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-600 shadow-sm">
+                  All data
+                </span>
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <p className="mb-3 text-sm font-bold text-rose-700">Hot Numbers</p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {statsAll.hot.map((n) => (
+                      <div
+                        key={n}
+                        className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-xl font-black text-white shadow-sm"
+                      >
+                        {n}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-3 text-sm font-bold text-sky-700">Cold Numbers</p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {statsAll.cold.map((n) => (
+                      <div
+                        key={n}
+                        className="flex h-14 w-14 items-center justify-center rounded-full border border-slate-300 bg-white text-xl font-black text-slate-800"
+                      >
+                        {n}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <div className="mb-5">
+            <h2 className="text-xl font-black text-slate-950 sm:text-2xl">
+              อันดับเลขทั้งหมด
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-slate-500">
+              จำนวนครั้งที่เลข 0-9 ปรากฏในเลข 6 ตัว, 3 ตัว และ 2 ตัวรวมกัน
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {statsAll.ranking.map(([digit, count], index) => (
+              <div
+                key={digit}
+                className={
+                  index < 3
+                    ? "rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm"
+                    : "rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                }
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-bold text-slate-500">
+                    #{index + 1}
+                  </p>
+                  <p className="text-xs font-bold text-slate-500">
+                    {count} ครั้ง
+                  </p>
+                </div>
+                <p className="mt-3 text-4xl font-black text-slate-950">
+                  {digit}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <div className="mb-5">
+            <h2 className="text-xl font-black text-slate-950 sm:text-2xl">
+              Top 20 เลข 2 ตัว
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-slate-500">
+              อันดับเลข 2 ตัวที่ออกบ่อยที่สุด แสดงเป็น Card บนมือถือเพื่อป้องกันข้อมูลล้นจอ
+            </p>
+          </div>
+
+          <div className="grid gap-3 md:hidden">
+            {topNumber2.map(
+              ([number, count], index) => (
+                <div
+                  key={number}
+                  className={
+                    index < 3
+                      ? "rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm"
+                      : "rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                  }
                 >
-                  <td className="p-2 font-bold">
-                    {digit}
-                  </td>
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-bold text-slate-500">
+                        อันดับ #{index + 1}
+                      </p>
+                      <p className="mt-1 text-3xl font-black text-slate-950">
+                        {number}
+                      </p>
+                    </div>
 
-                  <td className="p-2">
-                    {count}
-                  </td>
+                    <div className="rounded-2xl bg-white px-4 py-3 text-center shadow-sm ring-1 ring-inset ring-slate-200">
+                      <p className="text-xs font-bold text-slate-500">จำนวน</p>
+                      <p className="mt-1 text-xl font-black text-emerald-700">
+                        {count}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+
+          <div className="hidden overflow-hidden rounded-2xl border border-slate-200 md:block">
+            <table className="w-full text-sm">
+              <thead className="bg-slate-100 text-slate-600">
+                <tr>
+                  <th className="p-4 text-left font-bold">อันดับ</th>
+                  <th className="p-4 text-left font-bold">เลข</th>
+                  <th className="p-4 text-left font-bold">จำนวนครั้ง</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
 
-        </div>
-<div className="bg-white rounded-xl shadow p-6 mt-8">
+              <tbody className="divide-y divide-slate-200 bg-white">
+                {topNumber2.map(
+                  ([number, count], index) => (
+                    <tr
+                      key={number}
+                      className={index < 3 ? "bg-emerald-50/70" : "hover:bg-slate-50"}
+                    >
+                      <td className="p-4 font-bold text-slate-500">
+                        #{index + 1}
+                      </td>
 
-  <h2 className="text-2xl font-bold mb-6">
-    🎯 Top 20 เลข 2 ตัว
-  </h2>
+                      <td className="p-4 text-lg font-black text-slate-950">
+                        {number}
+                      </td>
 
-  <table className="w-full">
-    <thead>
-      <tr className="border-b">
-        <th className="text-left p-2">
-          อันดับ
-        </th>
+                      <td className="p-4 font-bold text-slate-800">
+                        {count}
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-        <th className="text-left p-2">
-          เลข
-        </th>
-
-        <th className="text-left p-2">
-          จำนวนครั้ง
-        </th>
-      </tr>
-    </thead>
-
-    <tbody>
-      {topNumber2.map(
-        ([number, count], index) => (
-          <tr
-            key={number}
-            className="border-b"
-          >
-            <td className="p-2">
-              #{index + 1}
-            </td>
-
-            <td className="p-2 font-bold text-lg">
-              {number}
-            </td>
-
-            <td className="p-2">
-              {count}
-            </td>
-          </tr>
-        )
-      )}
-    </tbody>
-  </table>
-
-</div>
+        <footer className="pb-4 pt-2 text-center text-xs leading-6 text-slate-500 sm:text-sm">
+          Statistics แสดงผลจากข้อมูลย้อนหลัง ใช้เพื่อดูแนวโน้มและภาพรวมของตัวเลขเท่านั้น
+        </footer>
       </div>
     </main>
     
