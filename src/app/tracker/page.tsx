@@ -1,10 +1,9 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { supabase } from "@/lib/supabase";
 import {
   analyzeNumbers,
   analyze4DPositions,
 } from "@/lib/analyzer";
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 import {
   testPositionAnalyzer,
@@ -13,6 +12,9 @@ import {
   testHybridV7Analyzer,
 } from "@/lib/backtest";
 import { calculateScores } from "@/lib/scoring";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 function testAccuracy(data: any[], windowSize: number) {
   let hitCount = 0;
@@ -113,6 +115,7 @@ function test4DAnalyzer(draws: any[]) {
 }
 
 export default async function TrackerPage() {
+  noStore();
   const { data, error } = await supabase
     .from("draws")
     .select("*")
@@ -122,10 +125,18 @@ export default async function TrackerPage() {
     return <div className="p-8">Error: {error.message}</div>;
   }
   
-  const { data: predictions } = await supabase
+  const { data: predictions, error: predictionsError } = await supabase
   .from("predictions")
   .select("*")
   .order("source_draw_date", { ascending: false });
+
+if (predictionsError) {
+  return (
+    <div className="p-8">
+      Prediction Error: {predictionsError.message}
+    </div>
+  );
+}
   console.log("TRACKER PREDICTIONS:", predictions);
 
   const results = [];
