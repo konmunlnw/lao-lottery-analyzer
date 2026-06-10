@@ -3,6 +3,7 @@ import {
   analyze2DPositions,
   analyze2DTrend,
   analyzeHybridV7,
+  analyzeDynamicV8,
 } from "./analyzer";
 
 export function testPositionAnalyzer(draws: any[]) {
@@ -77,6 +78,32 @@ export function testHybridV7Analyzer(draws: any[]) {
     const nextDraw = draws[i - 1];
 
     if (top10.includes(nextDraw.number_2)) hits++;
+    total++;
+  }
+
+  return {
+    hits,
+    total,
+    accuracy: total > 0 ? ((hits / total) * 100).toFixed(2) : "0",
+  };
+}
+
+export function testDynamicV8Analyzer(draws: any[]) {
+  let hits = 0;
+  let total = 0;
+
+  for (let i = 100; i < draws.length - 1; i++) {
+    const history = draws.slice(i);
+    const predictions = analyzeDynamicV8(history)
+      .slice(0, 10)
+      .map((row) => row.number);
+
+    const nextDraw = draws[i - 1];
+
+    if (predictions.includes(nextDraw.number_2)) {
+      hits++;
+    }
+
     total++;
   }
 

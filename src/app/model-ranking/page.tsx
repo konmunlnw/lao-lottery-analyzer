@@ -4,7 +4,10 @@ import {
   testPositionEliteAnalyzer,
   testTrendAnalyzer,
   testHybridV7Analyzer,
+  testDynamicV8Analyzer,
 } from "@/lib/backtest";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function ModelRankingPage() {
   const { data, error } = await supabase
@@ -50,6 +53,12 @@ export default async function ModelRankingPage() {
       hit: `${testHybridV7Analyzer(data).hits}/${testHybridV7Analyzer(data).total}`,
       note: "รวมคะแนนจาก V5 + V6",
     },
+    {
+  name: "Analyzer V8 Dynamic",
+  accuracy: Number(testDynamicV8Analyzer(data).accuracy),
+  hit: `${testDynamicV8Analyzer(data).hits}/${testDynamicV8Analyzer(data).total}`,
+  note: "Dynamic Model + Trend + Missing Weight",
+},
   ].sort((a, b) => b.accuracy - a.accuracy);
 
   return (

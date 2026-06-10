@@ -3,6 +3,7 @@ import {
   testPositionEliteAnalyzer,
   testTrendAnalyzer,
   testHybridV7Analyzer,
+  testDynamicV8Analyzer,
 } from "@/lib/backtest";
 import { supabase } from "@/lib/supabase";
 import {
@@ -10,7 +11,8 @@ import {
   analyze2DPositions,
   analyze4DPositions,
   analyze2DTrend,
-  analyzeHybridV7
+  analyzeHybridV7,
+  analyzeDynamicV8,
 } from "@/lib/analyzer";
 import { calculateScores } from "@/lib/scoring";
 export const dynamic = "force-dynamic";
@@ -46,6 +48,10 @@ export default async function Home() {
   analyze2DTrend(data || []);
   const hybridAnalysis = 
   analyzeHybridV7(data || []);
+  const dynamicV8Analysis = 
+  analyzeDynamicV8(data || []);
+  const mainV8Numbers = dynamicV8Analysis.slice(0, 5);
+const backupV8Numbers = dynamicV8Analysis.slice(5, 10);
   const eliteNumbers =
   positionAnalysis.eliteSuggestions || [];
   const mainEliteNumbers = eliteNumbers.slice(0, 5);
@@ -58,11 +64,16 @@ const statsV5 = testPositionAnalyzer(backtestData);
 const statsElite = testPositionEliteAnalyzer(backtestData);
 const statsTrend = testTrendAnalyzer(backtestData);
 const statsHybrid = testHybridV7Analyzer(backtestData);
+const statsV8 = testDynamicV8Analyzer(backtestData);
 const modelRanking = [
   {
     name: "Analyzer V5 Pro",
     accuracy: Number(statsV5.accuracy),
   },
+  {
+  name: "Analyzer V8 Dynamic",
+  accuracy: Number(statsV8.accuracy),
+},
   {
     name: "V5 Elite",
     accuracy: Number(statsElite.accuracy),
@@ -204,12 +215,12 @@ const modelRanking = [
           <div>
             <p className="mb-3 text-sm font-bold text-slate-300">Top 5 เน้น</p>
             <div className="grid grid-cols-5 gap-2 sm:flex sm:flex-wrap sm:gap-4">
-              {mainEliteNumbers.map((num) => (
+              {mainV8Numbers.map((row) => (
                 <span
-                  key={num}
+                  key={row.number}
                   className="flex min-h-16 items-center justify-center rounded-2xl bg-white px-1 text-2xl font-black text-slate-950 shadow-sm sm:min-h-24 sm:min-w-28 sm:px-6 sm:text-5xl"
                 >
-                  {num}
+                  {row.number}
                 </span>
               ))}
             </div>
@@ -218,12 +229,12 @@ const modelRanking = [
           <div className="mt-6">
             <p className="mb-3 text-sm font-bold text-slate-300">สำรอง 5 ตัว</p>
             <div className="grid grid-cols-5 gap-2 sm:flex sm:flex-wrap sm:gap-3">
-              {backupEliteNumbers.map((num) => (
+              {backupV8Numbers.map((row) => (
                 <span
-                  key={num}
+                  key={row.number}
                   className="flex min-h-12 items-center justify-center rounded-xl bg-slate-800 px-2 text-lg font-black text-white ring-1 ring-inset ring-slate-700 sm:min-w-20 sm:px-4 sm:py-3 sm:text-2xl"
                 >
-                  {num}
+                  {row.number}
                 </span>
               ))}
             </div>
@@ -500,6 +511,26 @@ const modelRanking = [
                 ))}
               </div>
             </div>
+            <section className="rounded-3xl border border-orange-200 bg-orange-50 p-5 shadow-sm sm:p-6">
+  <h2 className="text-xl font-black text-slate-950 sm:text-2xl">
+    ⚡ ทดลอง: Analyzer V8 Dynamic
+  </h2>
+
+  <p className="mt-1 text-sm text-slate-600">
+    โมเดลที่ให้น้ำหนักกับงวดล่าสุดมากขึ้น เพื่อให้เลขแนะนำเปลี่ยนไวขึ้นในแต่ละงวด
+  </p>
+
+  <div className="mt-4 flex flex-wrap gap-2">
+    {dynamicV8Analysis.slice(0, 10).map((row) => (
+      <span
+        key={row.number}
+        className="inline-flex min-w-12 items-center justify-center rounded-xl bg-orange-600 px-3 py-2 font-black text-white"
+      >
+        {row.number}
+      </span>
+    ))}
+  </div>
+</section>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5 lg:col-span-2">
               <h3 className="text-lg font-black text-slate-950">4D Analyzer V1</h3>

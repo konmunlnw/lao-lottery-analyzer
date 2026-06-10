@@ -238,3 +238,46 @@ export function analyzeHybridV7(draws: any[]) {
     }))
     .sort((a, b) => b.score - a.score);
 }
+export function analyzeDynamicV8(draws: any[]) {
+  const recent20 = draws.slice(0, 20);
+  const recent50 = draws.slice(0, 50);
+  const recent100 = draws.slice(0, 100);
+
+  const scoreMap: Record<string, number> = {};
+
+  for (let i = 0; i < 100; i++) {
+    const num = i.toString().padStart(2, "0");
+    scoreMap[num] = 0;
+
+    const count20 = recent20.filter((d) => d.number_2 === num).length;
+    const count50 = recent50.filter((d) => d.number_2 === num).length;
+    const count100 = recent100.filter((d) => d.number_2 === num).length;
+
+    const lastIndex = draws.findIndex((d) => d.number_2 === num);
+    const missing = lastIndex === -1 ? draws.length : lastIndex;
+
+    scoreMap[num] =
+      count20 * 8 +
+      count50 * 4 +
+      count100 * 2 +
+      Math.min(missing, 80) * 0.35;
+  }
+
+  const v5 = analyze2DPositions(draws);
+  const trend = analyze2DTrend(draws).slice(0, 15);
+
+  v5.eliteSuggestions.forEach((num) => {
+    scoreMap[num] = (scoreMap[num] || 0) + 6;
+  });
+
+  trend.forEach((row, index) => {
+    scoreMap[row.number] = (scoreMap[row.number] || 0) + (15 - index) *2;
+  });
+
+  return Object.entries(scoreMap)
+    .map(([number, score]) => ({
+      number,
+      score,
+    }))
+    .sort((a, b) => b.score - a.score);
+}
